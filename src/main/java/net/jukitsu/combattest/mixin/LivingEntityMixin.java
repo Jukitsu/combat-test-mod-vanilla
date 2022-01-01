@@ -18,7 +18,8 @@ public abstract class LivingEntityMixin extends Entity {
         super(entityType, level);
     }
 
-    @Shadow public abstract double getAttributeValue(Attribute attr);
+    @Shadow
+    public abstract double getAttributeValue(Attribute attr);
 
     @Overwrite
     public void knockback(double d, double e, double f) {
