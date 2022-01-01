@@ -52,7 +52,12 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @Shadow public abstract float getAttackStrengthScale(float f);
     @Shadow public abstract void resetAttackStrengthTicker();
+    @Shadow public abstract void attack(Entity e);
 
+
+    private boolean isAttackAvailable(float f) {
+        return this.getAttackStrengthScale(f) > 0.5;
+    }
 
     @ModifyVariable(method="attack", at=@At("STORE"), ordinal=2)
     private float cancelAttackStrengthScale(float x) {
@@ -64,9 +69,17 @@ public abstract class PlayerMixin extends LivingEntity {
         return x && getAttackStrengthScale(1.0F) > 0.95F && EnchantmentHelper.getSweepingDamageRatio(this) > 0.0F;
     }
 
+
     @Redirect(method="attack", at=@At(value="INVOKE", target="Lnet/minecraft/world/entity/player/Player;resetAttackStrengthTicker()V"))
     public void cancelAttackReset(Player player) {
 
+    }
+
+    @Inject(method="attack", at = @At("HEAD"), cancellable = true)
+    public void cancelAttack(Entity entity, CallbackInfo info) {
+        if (!this.isAttackAvailable(1.0F)) {
+            info.cancel();
+        }
     }
 
     @Inject(method="attack", at = @At("TAIL"))
