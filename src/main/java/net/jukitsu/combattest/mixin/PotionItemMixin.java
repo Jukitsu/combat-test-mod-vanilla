@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PotionItem.class)
-public abstract class PotionItemMixin {
+public class PotionItemMixin {
 
     @Inject(method = "getUseDuration", at = @At(value = "HEAD"), cancellable = true)
     public void changeUseDuration(ItemStack itemStack, CallbackInfoReturnable<Integer> cir)
