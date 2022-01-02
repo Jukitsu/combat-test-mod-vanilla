@@ -1,6 +1,8 @@
 package net.jukitsu.combattest.mixin;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
@@ -51,6 +53,19 @@ public abstract class BowItemMixin {
 
         int j = this.getUseDuration(bow) - i;
         arrow.setCritArrow(getFatigueForTime(j) <= 0.5F && power == 1.0F);
+
+    }
+
+    @Redirect(method = "releaseUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/AbstractArrow;shootFromRotation(Lnet/minecraft/world/entity/Entity;FFFFF)V"))
+    private void applyFatigueMissing(AbstractArrow instance, Entity entity, float v, float v1, float v2, float v3, float v4) {
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            int j = this.getUseDuration(bow) - i;
+            float g = getFatigueForTime(j);
+            instance.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, power * 3.0F, 0.25F * g);
+
+        }
+
 
     }
 
