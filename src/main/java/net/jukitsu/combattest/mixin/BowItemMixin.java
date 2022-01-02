@@ -17,14 +17,13 @@ public abstract class BowItemMixin {
 
     //add bow fatigue by using a method from 1.16 8c
 
-    @Shadow public int getUseDuration(ItemStack itemStack) {
-        return 72000;
-    }
-
+    public ItemStack bow;
+    public int i;
+    public float power;
 
     @Shadow
     public static float getPowerForTime(int i) {
-        float f = (float)i / 20.0F;
+        float f = (float) i / 20.0F;
         f = (f * f + f * 2.0F) / 3.0F;
         if (f > 1.0F) {
             f = 1.0F;
@@ -33,45 +32,35 @@ public abstract class BowItemMixin {
         return f;
     }
 
-    public ItemStack bow;
-    public int i;
-    public float power;
+    @Shadow
+    public int getUseDuration(ItemStack itemStack) {
+        return 72000;
+    }
 
-     public float getFatigueForTime(int i) {
+    public float getFatigueForTime(int i) {
         if (i < 60) {
             return 0.5F;
         } else {
-            return i >= 200 ? 10.5F : 0.5F + 10.0F * (float)(i - 60) / 140.0F;
+            return i >= 200 ? 10.5F : 0.5F + 10.0F * (float) (i - 60) / 140.0F;
         }
     }
 
 
-
-    @Redirect(method= "releaseUsing", at = @At(value="INVOKE", target="Lnet/minecraft/world/entity/projectile/AbstractArrow;setCritArrow(Z)V"))
-    private void applyBowFatigue(AbstractArrow arrow, boolean bl){
+    @Redirect(method = "releaseUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/AbstractArrow;setCritArrow(Z)V"))
+    private void applyBowFatigue(AbstractArrow arrow, boolean bl) {
 
         int j = this.getUseDuration(bow) - i;
-        if(getFatigueForTime(j) <= 0.5F && power == 1.0F)
-        {
-            arrow.setCritArrow(true);
-
-
-        }else
-        {
-            arrow.setCritArrow(false);
-
-        }
+        arrow.setCritArrow(getFatigueForTime(j) <= 0.5F && power == 1.0F);
 
     }
 
     @Inject(method = "releaseUsing", at = @At("HEAD"))
-    public void releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int i, CallbackInfo info)
-    {
+    public void releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int i, CallbackInfo info) {
         bow = itemStack;
         this.i = i;
         int j = this.getUseDuration(bow) - i;
-        power = this.getPowerForTime(j);
-        
+        power = getPowerForTime(j);
+
     }
 }
 
