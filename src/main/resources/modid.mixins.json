@@ -7,7 +7,8 @@
     "PlayerMixin",
     "LivingEntityMixin",
     "BowItemMixin",
-    "MobMixin"
+    "MobMixin",
+    "PotionItemMixin"
   ],
   "client": [
     "client.MinecraftMixin",
