@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BowItem.class)
-public class BowItemMixin {
+public abstract class BowItemMixin {
 
     //add bow fatigue by using a method from 1.16 8c
 
@@ -21,10 +21,23 @@ public class BowItemMixin {
         return 72000;
     }
 
-    ItemStack bow;
-    int i;
 
-     float getFatigueForTime(int i) {
+    @Shadow
+    public static float getPowerForTime(int i) {
+        float f = (float)i / 20.0F;
+        f = (f * f + f * 2.0F) / 3.0F;
+        if (f > 1.0F) {
+            f = 1.0F;
+        }
+
+        return f;
+    }
+
+    public ItemStack bow;
+    public int i;
+    public float power;
+
+     public float getFatigueForTime(int i) {
         if (i < 60) {
             return 0.5F;
         } else {
@@ -32,11 +45,18 @@ public class BowItemMixin {
         }
     }
 
+
+
     @Redirect(method= "releaseUsing", at = @At(value="INVOKE", target="Lnet/minecraft/world/entity/projectile/AbstractArrow;setCritArrow(Z)V"))
     private void applyBowFatigue(AbstractArrow arrow, boolean bl){
 
         int j = this.getUseDuration(bow) - i;
-        if(getFatigueForTime(j) > 0.5d)
+        if(getFatigueForTime(j) <= 0.5F && power == 1.0F)
+        {
+            arrow.setCritArrow(true);
+
+
+        }else
         {
             arrow.setCritArrow(false);
 
@@ -49,6 +69,9 @@ public class BowItemMixin {
     {
         bow = itemStack;
         this.i = i;
+        int j = this.getUseDuration(bow) - i;
+        power = this.getPowerForTime(j);
+        
     }
 }
 
