@@ -8,7 +8,10 @@
     "LivingEntityMixin",
     "BowItemMixin",
     "MobMixin",
-    "PotionItemMixin"
+    "PotionItemMixin",
+    "MilkBucketItemMixin",
+    "BowlFoodItemMixin",
+    "HoneyBottleItemMixin"
   ],
   "client": [
     "client.MinecraftMixin",
