@@ -21,6 +21,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract double getAttributeValue(Attribute attr);
 
+
     @Overwrite
     public void knockback(double d, double e, double f) {
         d *= 1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
@@ -31,5 +32,6 @@ public abstract class LivingEntityMixin extends Entity {
             this.setDeltaMovement(vec3.x / 2.0D - vec32.x, this.onGround ? Math.min(0.5D, d) : vec3.y + d, vec3.z / 2.0D - vec32.z);
         }
     }
+
 
 }

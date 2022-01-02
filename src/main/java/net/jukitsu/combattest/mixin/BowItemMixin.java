@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(BowItem.class)
 public abstract class BowItemMixin {
@@ -69,7 +70,7 @@ public abstract class BowItemMixin {
 
     }
 
-    @Inject(method = "releaseUsing", at = @At("HEAD"))
+    @Inject(method = "releaseUsing", at = @At("HEAD"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     public void releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int i, CallbackInfo info) {
         bow = itemStack;
         this.i = i;
