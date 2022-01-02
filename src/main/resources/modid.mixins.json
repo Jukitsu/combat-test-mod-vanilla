@@ -9,7 +9,8 @@
     "BowItemMixin"
   ],
   "client": [
-    "client.MinecraftMixin"
+    "client.MinecraftMixin",
+    "client.GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

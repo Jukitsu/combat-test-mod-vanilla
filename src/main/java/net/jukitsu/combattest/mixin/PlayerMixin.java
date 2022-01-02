@@ -54,6 +54,11 @@ public abstract class PlayerMixin extends LivingEntity {
 
     }
 
+    @Redirect(method="attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;distanceToSqr(Lnet/minecraft/world/entity/Entity;)D"))
+    public double modifyHitReg(Player player, Entity entity) {
+        return 0.0D; // Temporary cancelling hitreg check
+    }
+
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
     public void cancelAttack(Entity entity, CallbackInfo info) {
         if (!this.isAttackAvailable(1.0F)) {
