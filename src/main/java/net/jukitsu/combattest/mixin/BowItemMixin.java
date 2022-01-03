@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+
 @Mixin(BowItem.class)
 public abstract class BowItemMixin {
 
@@ -24,21 +25,9 @@ public abstract class BowItemMixin {
     public int i;
     public float power;
 
-    @Shadow
-    public static float getPowerForTime(int i) {
-        float f = (float) i / 20.0F;
-        f = (f * f + f * 2.0F) / 3.0F;
-        if (f > 1.0F) {
-            f = 1.0F;
-        }
-
-        return f;
-    }
 
     @Shadow
-    public int getUseDuration(ItemStack itemStack) {
-        return 72000;
-    }
+    public abstract int getUseDuration(ItemStack itemStack);
 
     public float getFatigueForTime(int i) {
         if (i < 60) {
@@ -75,7 +64,7 @@ public abstract class BowItemMixin {
         bow = itemStack;
         this.i = i;
         int j = this.getUseDuration(bow) - i;
-        power = getPowerForTime(j);
+        power = BowItem.getPowerForTime(j);
 
     }
 }
