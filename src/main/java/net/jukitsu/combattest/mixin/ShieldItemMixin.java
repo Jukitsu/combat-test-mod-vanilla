@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(ShieldItem.class)
-public abstract class ShieldItemMixin extends Item {
+public class ShieldItemMixin extends Item {
 
 
     public ShieldItemMixin(Properties properties) {
