@@ -1,6 +1,9 @@
 package net.jukitsu.combattest.mixin;
 
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.CombatTracker;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -11,6 +14,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -77,9 +81,16 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow public abstract float getHealth();
 
+    @Shadow protected abstract void hurtCurrentlyUsedShield(float f);
+
     @Overwrite
     public void knockback(double d, double e, double f) {
         d *= 1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+//        ItemStack itemStack = this.getBlockingItem();
+//        if (!itemStack.isEmpty()) {
+//            double g = itemStack.getTagElement("BlockEntityTag") != null ? 0.8 : 0.5;
+//            d = Math.min(1.0D, d +  g);
+//        }
         if (!(d <= 0.0D)) {
             this.hasImpulse = true;
             Vec3 vec3 = this.getDeltaMovement();
@@ -98,15 +109,18 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     public void damageThroughShield(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         float h = 0.0F;
-        Entity entity2;
+        Entity entity2 = null;
+        boolean bl = true;
+        float g = f;
         if (f > 0.0F && this.isDamageSourceBlocked(damageSource)) {
 
             h = Math.min(this.getBlockingItem().getTagElement("BlockEntityTag") != null ? 10.0F : 5.0F, f);
             if (!damageSource.isProjectile() && !damageSource.isExplosion()) {
                 entity2 = damageSource.getDirectEntity();
                 if (entity2 instanceof LivingEntity) {
+                    this.hurtCurrentlyUsedShield(f);
                     this.blockUsingShield((LivingEntity) entity2);
-
+                    
                 }
             } else {
                 h = f;
@@ -114,6 +128,7 @@ public abstract class LivingEntityMixin extends Entity {
             f-=h;
             this.combatTracker.recordDamage(damageSource, this.getHealth(), f);
             this.actuallyHurt(damageSource,f);
+            this.level.broadcastEntityEvent(this, (byte)29);
             boolean bl2 = true;
             if (this.isDeadOrDying()) {
                 if (!this.checkTotemDeathProtection(damageSource)) {
@@ -126,6 +141,17 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             } else if (bl2) {
                 this.playHurtSound(damageSource);
+            }
+
+            if ((Object) this instanceof ServerPlayer) {
+                CriteriaTriggers.ENTITY_HURT_PLAYER.trigger( (ServerPlayer) (Object) this, damageSource, g, f, bl);
+                if (h > 0.0F && h < 3.4028235E37F) {
+                    ((ServerPlayer) (Object) this).awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(h * 10.0F));
+                }
+            }
+
+            if (entity2 instanceof ServerPlayer) {
+                CriteriaTriggers.PLAYER_HURT_ENTITY.trigger((ServerPlayer)entity2, this, damageSource, g, f, bl);
             }
 
 
