@@ -10,9 +10,11 @@
     "MobMixin",
     "PotionItemMixin",
     "MilkBucketItemMixin",
-    "BowlFoodItemMixin",
+    "ItemMixin",
     "HoneyBottleItemMixin",
-    "ShieldItemMixin"
+    "ShieldItemMixin",
+    "SnowballItemMixin",
+    "EggItemMixin"
   ],
   "client": [
     "client.MinecraftMixin",
