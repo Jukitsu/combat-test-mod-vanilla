@@ -4,6 +4,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.CombatTracker;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -83,6 +84,14 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow protected abstract void hurtCurrentlyUsedShield(float f);
 
+    @Shadow public abstract ItemStack getUseItem();
+
+    @Shadow public abstract void stopUsingItem();
+
+    @Shadow public float hurtDir;
+
+    @Shadow public float yBodyRot;
+
     @Overwrite
     public void knockback(double d, double e, double f) {
 
@@ -105,16 +114,20 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "actuallyHurt", at = @At("HEAD"))
     protected void cancelInvulnerabilityTimer(DamageSource damageSource, float f, CallbackInfo info) {
         if (!this.isInvulnerableTo(damageSource) && damageSource.getEntity() instanceof Player) {
-            this.invulnerableTime = 0;
+            this.invulnerableTime = 5;
         }
     }
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     public void damageThroughShield(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         float h = 0.0F;
-        Entity entity2 = null;
+        Entity entity2 = damageSource.getDirectEntity();
         boolean bl = true;
         float g = f;
+        if (this.isUsingItem() && (this.getUseItem().getUseAnimation() == UseAnim.EAT || this.getUseItem().getUseAnimation() == UseAnim.DRINK)) {
+            this.stopUsingItem();
+        }
+
         if (f > 0.0F && this.isDamageSourceBlocked(damageSource)) {
 
             h = Math.min(this.getBlockingItem().getTagElement("BlockEntityTag") != null ? 10.0F : 5.0F, f);
@@ -123,7 +136,6 @@ public abstract class LivingEntityMixin extends Entity {
                 if (entity2 instanceof LivingEntity) {
                     this.hurtCurrentlyUsedShield(f);
                     this.blockUsingShield((LivingEntity) entity2);
-                    
                 }
             } else {
                 h = f;
