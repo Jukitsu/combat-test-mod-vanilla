@@ -91,6 +91,12 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    @Overwrite
+    public boolean isBlocking()
+    {
+        return !this.getBlockingItem().isEmpty();
+    }
+
     public ItemStack getBlockingItem() {
         if (this.isUsingItem() && !this.useItem.isEmpty()) {
             Item item = this.useItem.getItem();
