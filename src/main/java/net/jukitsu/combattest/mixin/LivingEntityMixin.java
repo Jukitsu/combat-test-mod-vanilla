@@ -85,12 +85,15 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Overwrite
     public void knockback(double d, double e, double f) {
-        d *= 1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+
 //        ItemStack itemStack = this.getBlockingItem();
 //        if (!itemStack.isEmpty()) {
 //            double g = itemStack.getTagElement("BlockEntityTag") != null ? 0.8 : 0.5;
 //            d = Math.min(1.0D, d +  g);
 //        }
+
+        d *= 1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+
         if (!(d <= 0.0D)) {
             this.hasImpulse = true;
             Vec3 vec3 = this.getDeltaMovement();
