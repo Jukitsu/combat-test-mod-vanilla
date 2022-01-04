@@ -71,4 +71,5 @@ public abstract class PlayerMixin extends LivingEntity {
         this.resetAttackStrengthTicker();
     }
 
+
 }
