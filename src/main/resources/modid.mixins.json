@@ -14,7 +14,8 @@
     "HoneyBottleItemMixin",
     "ShieldItemMixin",
     "SnowballItemMixin",
-    "EggItemMixin"
+    "EggItemMixin",
+    "MultiPlayerGameModeMixin"
   ],
   "client": [
     "client.MinecraftMixin",
