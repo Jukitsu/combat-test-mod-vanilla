@@ -2,13 +2,21 @@ package net.jukitsu.combattest.mixin;
 
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.client.ClientRecipeBook;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.stats.StatsCounter;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -71,5 +79,11 @@ public abstract class PlayerMixin extends LivingEntity {
         this.resetAttackStrengthTicker();
     }
 
+    @Inject(method="actuallyHurt", at=@At("HEAD"))
+    private void modifyPlayerInvulnerability(DamageSource damageSource, float f, CallbackInfo ci) {
+        if (!this.isInvulnerableTo(damageSource)) {
+            this.invulnerableTime = 5;
+        }
+    }
 
 }

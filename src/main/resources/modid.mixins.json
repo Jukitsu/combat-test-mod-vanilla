@@ -19,7 +19,8 @@
   ],
   "client": [
     "client.MinecraftMixin",
-    "client.GameRendererMixin"
+    "client.GameRendererMixin",
+    "client.LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
