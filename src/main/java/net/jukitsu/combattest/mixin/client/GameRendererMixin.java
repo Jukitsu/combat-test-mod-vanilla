@@ -1,5 +1,7 @@
 package net.jukitsu.combattest.mixin.client;
 
+import net.minecraft.client.AttackIndicatorStatus;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -29,6 +31,8 @@ public class GameRendererMixin {
 
     @Shadow @Final
     private Minecraft minecraft;
+
+    @Shadow @Final private Camera mainCamera;
 
     @Inject(method="pick", at=@At(value="INVOKE", target="Lnet/minecraft/world/phys/BlockHitResult;miss(Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/core/Direction;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/phys/BlockHitResult;"), locals= LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
     public void checkReachBeforeMissing(float f, CallbackInfo info, Entity entity, double d, Vec3 vec3, boolean bl, int i, double e, Vec3 vec32, Vec3 vec33, float g, AABB aabb, EntityHitResult entityHitResult, Entity entity2, Vec3 vec34, double h) {

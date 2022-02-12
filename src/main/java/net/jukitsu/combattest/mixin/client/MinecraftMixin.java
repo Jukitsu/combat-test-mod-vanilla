@@ -29,7 +29,8 @@ public class MinecraftMixin {
             target = "Lnet/minecraft/client/player/LocalPlayer;resetAttackStrengthTicker()V"),
             cancellable = true)
     private void cancelSwing(CallbackInfo info) {
-        if (this.player.getAttackStrengthScale(1.0f) < 0.5) {
+        if (this.player.getAttackStrengthScale(1.0f) < 0.2) {
+            //note: value here has temporarily been changed to 0.2 just to experiment.  This number will keep getting tweaked until we get proper 4 tick swing delay
             info.cancel();
         }
     }

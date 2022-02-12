@@ -13,10 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShieldItem;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -92,16 +89,29 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow public float yBodyRot;
 
+
+    @Inject(at = @At("HEAD"), method = "hurt")
+    public void interruptEating(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir)
+    {
+        if(f <= 0.5 || damageSource.isFire()) return;
+
+        if (this.isUsingItem() && (this.getUseItem().getUseAnimation() == UseAnim.EAT || this.getUseItem().getUseAnimation() == UseAnim.DRINK)) {
+            this.stopUsingItem();
+        }
+    }
+
     @Overwrite
     public void knockback(double d, double e, double f) {
 
-//        ItemStack itemStack = this.getBlockingItem();
-//        if (!itemStack.isEmpty()) {
-//            double g = itemStack.getTagElement("BlockEntityTag") != null ? 0.8 : 0.5;
-//            d = Math.min(1.0D, d +  g);
-//        }
-
         d *= 1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+
+
+        ItemStack itemStack = this.getBlockingItem();
+        if (!itemStack.isEmpty()) {
+            double g = itemStack.getTagElement("BlockEntityTag") != null ? 0.8 : 0.5;
+            d = Math.min(1.0D, d +  g);
+        }
+
 
         if (!(d <= 0.0D)) {
             this.hasImpulse = true;
@@ -114,7 +124,9 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "actuallyHurt", at = @At("HEAD"))
     protected void cancelInvulnerabilityTimer(DamageSource damageSource, float f, CallbackInfo info) {
         if (!this.isInvulnerableTo(damageSource) && damageSource.getEntity() instanceof Player) {
-            this.invulnerableTime = 5;
+           this.invulnerableTime = 5;
+
+
         }
     }
 
