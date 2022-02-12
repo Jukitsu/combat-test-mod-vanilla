@@ -117,7 +117,7 @@ public abstract class LivingEntityMixin extends Entity {
             this.hasImpulse = true;
             Vec3 vec3 = this.getDeltaMovement();
             Vec3 vec32 = (new Vec3(e, 0.0D, f)).normalize().scale(d);
-            this.setDeltaMovement(vec3.x / 2.0D - vec32.x, this.onGround ? Math.min(0.5D, d * 0.9D) : vec3.y + d * 0.5D, vec3.z / 2.0D - vec32.z);
+            this.setDeltaMovement(-vec32.x, this.onGround ? Math.min(0.5D, d * 0.9D) : Math.min(1.0D, vec3.y / 2.0D + d * 0.8D), -vec32.z);
         }
     }
 
