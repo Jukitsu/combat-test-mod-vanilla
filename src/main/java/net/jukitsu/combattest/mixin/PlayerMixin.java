@@ -8,11 +8,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.StatsCounter;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -41,6 +44,8 @@ public abstract class PlayerMixin extends LivingEntity {
     @Shadow
     public abstract void attack(Entity e);
 
+
+    @Shadow public abstract void crit(Entity entity);
 
     private boolean isAttackAvailable(float f) {
         return this.getAttackStrengthScale(f) > 0.5;
@@ -79,11 +84,37 @@ public abstract class PlayerMixin extends LivingEntity {
         this.resetAttackStrengthTicker();
     }
 
-    @Inject(method="actuallyHurt", at=@At("HEAD"))
-    private void modifyPlayerInvulnerability(DamageSource damageSource, float f, CallbackInfo ci) {
-        if (!this.isInvulnerableTo(damageSource)) {
-            this.invulnerableTime = 5;
+//    @Inject(method="actuallyHurt", at=@At("HEAD"))
+//    private void modifyPlayerInvulnerability(DamageSource damageSource, float f, CallbackInfo ci) {
+//        if (!this.isInvulnerableTo(damageSource)) {
+//            this.invulnerableTime = 5;
+//        }
+//    }
+
+    //makes sprint crits possible?
+    @Inject(method = "attack", at = @At("TAIL"))
+
+    public void setSprintCrit(Entity entity, CallbackInfo ci)
+    {
+        boolean crit = this.fallDistance > 0.0F && !this.onGround && !this.onClimbable() && !this.isInWater() && !this.hasEffect(MobEffects.BLINDNESS) && !this.isPassenger() && entity instanceof LivingEntity && this.isSprinting();
+
+        if (crit) {
+            this.level.playSound((Player) (Object) this, this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 1.0F, 1.0F);
+            this.crit(entity);
+
+            float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+
+            Player player =  (Player) (Object)  this;
+
+            //add damage increase here
+
+            player.doHurtTarget(entity);
+
+            entity.hurt(DamageSource.playerAttack(player), f * 0.5f);
         }
+
+
+        //apply damage by using the hurt method and adding 50% of the initial damage onto it
     }
 
 }

@@ -124,30 +124,30 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "actuallyHurt", at = @At("HEAD"))
     protected void cancelInvulnerabilityTimer(DamageSource damageSource, float f, CallbackInfo info) {
         if (!this.isInvulnerableTo(damageSource) && damageSource.getEntity() instanceof Player) {
-           this.invulnerableTime = 5;
 
+                this.invulnerableTime = 5;
 
         }
     }
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     public void damageThroughShield(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
-        float h = 0.0F;
-        Entity entity2 = damageSource.getDirectEntity();
-        boolean bl = true;
-        float g = f;
-        if (this.isUsingItem() && (this.getUseItem().getUseAnimation() == UseAnim.EAT || this.getUseItem().getUseAnimation() == UseAnim.DRINK)) {
-            this.stopUsingItem();
-        }
+        float h;
+                    Entity entity2 = damageSource.getDirectEntity();
+                    boolean bl = true;
+                    float g = f;
+                    if (this.isUsingItem() && (this.getUseItem().getUseAnimation() == UseAnim.EAT || this.getUseItem().getUseAnimation() == UseAnim.DRINK)) {
+                        this.stopUsingItem();
+                    }
 
-        if (f > 0.0F && this.isDamageSourceBlocked(damageSource)) {
+                    if (f > 0.0F && this.isDamageSourceBlocked(damageSource)) {
 
-            h = Math.min(this.getBlockingItem().getTagElement("BlockEntityTag") != null ? 10.0F : 5.0F, f);
-            if (!damageSource.isProjectile() && !damageSource.isExplosion()) {
-                entity2 = damageSource.getDirectEntity();
-                if (entity2 instanceof LivingEntity) {
-                    this.hurtCurrentlyUsedShield(f);
-                    this.blockUsingShield((LivingEntity) entity2);
+                        h = Math.min(this.getBlockingItem().getTagElement("BlockEntityTag") != null ? 10.0F : 5.0F, f);
+                        if (!damageSource.isProjectile() && !damageSource.isExplosion()) {
+                            entity2 = damageSource.getDirectEntity();
+                            if (entity2 instanceof LivingEntity) {
+                                this.hurtCurrentlyUsedShield(f);
+                                this.blockUsingShield((LivingEntity) entity2);
                 }
             } else {
                 h = f;

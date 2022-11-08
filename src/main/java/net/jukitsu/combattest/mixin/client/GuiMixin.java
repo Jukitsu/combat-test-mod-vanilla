@@ -60,7 +60,7 @@ private void renderCrosshair(PoseStack poseStack) {
                 //int camera = true;
                 this.blit(poseStack, (this.screenWidth - 15) / 2, (this.screenHeight - 15) / 2, 0, 0, 15, 15);
                 if (this.minecraft.options.attackIndicator == AttackIndicatorStatus.CROSSHAIR) {
-                    if ((double) this.minecraft.player.getAttackStrengthScale(1.0F) >= 0.6D) {
+                    if ((double) this.minecraft.player.getAttackStrengthScale(1.0F) >= 0.7D) {
                         float poseStack2 = this.minecraft.player.getAttackStrengthScale(0.0F);
                         boolean bl = false;
                         if (this.minecraft.crosshairPickEntity != null && this.minecraft.crosshairPickEntity instanceof LivingEntity && poseStack2 >= 1.0F) {
