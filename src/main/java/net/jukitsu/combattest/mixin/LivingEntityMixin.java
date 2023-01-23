@@ -53,9 +53,6 @@ public abstract class LivingEntityMixin extends Entity {
 
 
     @Shadow
-    protected abstract void blockUsingShield(LivingEntity livingEntity);
-
-    @Shadow
     protected abstract void actuallyHurt(DamageSource damageSource, float f);
 
 
@@ -184,6 +181,17 @@ public abstract class LivingEntityMixin extends Entity {
 
             cir.cancel();
         }
+    }
+
+    @Overwrite
+    public void blockUsingShield(LivingEntity livingEntity) {
+        // Fix Shield knockback
+        this.blockedByShield(livingEntity);
+    }
+    @Overwrite
+    public void blockedByShield(LivingEntity livingEntity) {
+        // To do: remove shield knockback
+        livingEntity.knockback(0.5D, this.getX() - livingEntity.getX(), this.getZ() - livingEntity.getZ());
     }
 
     @Overwrite
