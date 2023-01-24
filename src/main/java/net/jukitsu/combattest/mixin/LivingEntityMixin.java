@@ -100,8 +100,8 @@ public abstract class LivingEntityMixin extends Entity {
     @Overwrite
     public void knockback(double d, double e, double f) {
 
+        d *= 1.25D;
         d *= 1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
-
 
         ItemStack itemStack = this.getBlockingItem();
         if (!itemStack.isEmpty()) {
