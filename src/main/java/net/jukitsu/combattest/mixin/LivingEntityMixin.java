@@ -106,7 +106,7 @@ public abstract class LivingEntityMixin extends Entity {
         ItemStack itemStack = this.getBlockingItem();
         if (!itemStack.isEmpty()) {
             double g = itemStack.getTagElement("BlockEntityTag") != null ? 0.8 : 0.5;
-            d = Math.min(1.0D, d +  g);
+            d = Math.min(1.0D, d + g);
         }
 
 
@@ -114,7 +114,7 @@ public abstract class LivingEntityMixin extends Entity {
             this.hasImpulse = true;
             Vec3 vec3 = this.getDeltaMovement();
             Vec3 vec32 = (new Vec3(e, 0.0D, f)).normalize().scale(d);
-            this.setDeltaMovement(-vec32.x, this.onGround ? Math.min(0.5D, d * 0.9D) : Math.min(1.0D, vec3.y / 2.0D + d * 0.8D), -vec32.z);
+            this.setDeltaMovement(-vec32.x, Math.min(1.0D, Math.max(0.0D, vec3.y) / 2.0D + d * 0.6D), -vec32.z);
         }
     }
 
@@ -130,21 +130,21 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     public void damageThroughShield(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         float h;
-                    Entity entity2 = damageSource.getDirectEntity();
-                    boolean bl = true;
-                    float g = f;
-                    if (this.isUsingItem() && (this.getUseItem().getUseAnimation() == UseAnim.EAT || this.getUseItem().getUseAnimation() == UseAnim.DRINK)) {
-                        this.stopUsingItem();
-                    }
+        Entity entity2 = damageSource.getDirectEntity();
+        boolean bl = true;
+        float g = f;
+        if (this.isUsingItem() && (this.getUseItem().getUseAnimation() == UseAnim.EAT || this.getUseItem().getUseAnimation() == UseAnim.DRINK)) {
+            this.stopUsingItem();
+        }
 
-                    if (f > 0.0F && this.isDamageSourceBlocked(damageSource)) {
+        if (f > 0.0F && this.isDamageSourceBlocked(damageSource)) {
 
-                        h = Math.min(this.getBlockingItem().getTagElement("BlockEntityTag") != null ? 10.0F : 5.0F, f);
-                        if (!damageSource.isProjectile() && !damageSource.isExplosion()) {
-                            entity2 = damageSource.getDirectEntity();
-                            if (entity2 instanceof LivingEntity) {
-                                this.hurtCurrentlyUsedShield(f);
-                                this.blockUsingShield((LivingEntity) entity2);
+            h = Math.min(this.getBlockingItem().getTagElement("BlockEntityTag") != null ? 10.0F : 5.0F, f);
+            if (!damageSource.isProjectile() && !damageSource.isExplosion()) {
+                entity2 = damageSource.getDirectEntity();
+                if (entity2 instanceof LivingEntity) {
+                    this.hurtCurrentlyUsedShield(f);
+                    this.blockUsingShield((LivingEntity) entity2);
                 }
             } else {
                 h = f;

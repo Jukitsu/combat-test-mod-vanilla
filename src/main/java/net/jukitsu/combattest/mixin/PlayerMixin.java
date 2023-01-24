@@ -84,12 +84,13 @@ public abstract class PlayerMixin extends LivingEntity {
         this.resetAttackStrengthTicker();
     }
 
-//    @Inject(method="actuallyHurt", at=@At("HEAD"))
-//    private void modifyPlayerInvulnerability(DamageSource damageSource, float f, CallbackInfo ci) {
-//        if (!this.isInvulnerableTo(damageSource)) {
-//            this.invulnerableTime = 5;
-//        }
-//    }
+    @Inject(method="actuallyHurt", at=@At("HEAD"))
+    private void modifyPlayerInvulnerability(DamageSource damageSource, float f, CallbackInfo ci) {
+        if (!this.isInvulnerableTo(damageSource)) {
+            this.invulnerableTime = 5;
+        }
+    }
+
 
     //makes sprint crits possible?
     @Inject(method = "attack", at = @At("TAIL"))
