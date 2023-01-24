@@ -3,7 +3,6 @@ package net.jukitsu.combattest.mixin.client;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.AttackIndicatorStatus;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -13,6 +12,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.HitResult;
+import com.mojang.math.Axis;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -43,13 +43,13 @@ public abstract class GuiMixin extends GuiComponent {
         Options options = this.minecraft.options;
         if (options.getCameraType().isFirstPerson()) {
             if (this.minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR || this.canRenderCrosshairForSpectator(this.minecraft.hitResult)) {
-                if (options.renderDebug && !options.hideGui && !this.minecraft.player.isReducedDebugInfo() && !options.reducedDebugInfo) {
+                if (options.renderDebug && !options.hideGui && !this.minecraft.player.isReducedDebugInfo() && !options.reducedDebugInfo().get()) {
                     Camera camera = this.minecraft.gameRenderer.getMainCamera();
                     PoseStack poseStack2 = RenderSystem.getModelViewStack();
                     poseStack2.pushPose();
                     poseStack2.translate((double) (this.screenWidth / 2), (double) (this.screenHeight / 2), (double) this.getBlitOffset());
-                    poseStack2.mulPose(Vector3f.XN.rotationDegrees(camera.getXRot()));
-                    poseStack2.mulPose(Vector3f.YP.rotationDegrees(camera.getYRot()));
+                    poseStack2.mulPose(Axis.XN.rotationDegrees(camera.getXRot()));
+                    poseStack2.mulPose(Axis.YP.rotationDegrees(camera.getYRot()));
                     poseStack2.scale(-1.0F, -1.0F, -1.0F);
                     RenderSystem.applyModelViewMatrix();
                     RenderSystem.renderCrosshair(10);
@@ -59,7 +59,7 @@ public abstract class GuiMixin extends GuiComponent {
                     RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                     //int camera = true;
                     this.blit(poseStack, (this.screenWidth - 15) / 2, (this.screenHeight - 15) / 2, 0, 0, 15, 15);
-                    if (this.minecraft.options.attackIndicator == AttackIndicatorStatus.CROSSHAIR) {
+                    if (this.minecraft.options.attackIndicator().get() == AttackIndicatorStatus.CROSSHAIR) {
                         if ((double) this.minecraft.player.getAttackStrengthScale(1.0F) >= 0.7D) {
                             float poseStack2 = this.minecraft.player.getAttackStrengthScale(0.0F);
                             boolean bl = false;
