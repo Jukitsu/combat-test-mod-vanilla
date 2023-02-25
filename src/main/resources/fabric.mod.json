@@ -1,20 +1,22 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "combattest",
   "version": "${version}",
 
-  "name": "Combat test Mod",
-  "description": "This mods attempts to port Combat tests to 1.19.+",
+  "name": "Combat Test Mod",
+  "description": "This mod attempts to port the Combat Test Snapshots to 1.19+",
   "authors": [
     "Jukitsu",
     "Shinkume"
   ],
+  "contributors": [
+    "NotCoded"
+  ],
   "contact": {
-
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/combattest/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -23,16 +25,13 @@
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "combattest.mixins.json"
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.11",
     "fabric-api": "*",
-    "minecraft": "~1.19.3",
-    "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
+    "fabricloader": ">=0.14.11",
+    "java": ">=17",
+    "minecraft": "~1.19.3"
   }
 }

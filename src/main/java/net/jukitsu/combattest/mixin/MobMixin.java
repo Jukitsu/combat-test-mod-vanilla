@@ -10,17 +10,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Mob.class)
 public abstract class MobMixin {
-
-/*@Inject(method = "doHurtTarget", at = @At(value = "HEAD"))
-public void interruptEating(Entity entity, CallbackInfoReturnable<Boolean> cir)
-{
-    if(entity instanceof Player && !((Player) entity).getLastDamageSource().isFire())
-    {
-        Player player = (Player) entity;
-
-        if(player.isUsingItem() && player.getUseItem().isEdible()) player.stopUsingItem();
+    @Inject(method = "doHurtTarget", at = @At(value = "HEAD"))
+    public void interruptEating(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+        if(entity instanceof Player player && player.getLastDamageSource() != null && !player.getLastDamageSource().isFire() ) {
+            if(player.isUsingItem() && player.getUseItem().isEdible()) player.stopUsingItem();
+        }
     }
-}*/
-
-
 }

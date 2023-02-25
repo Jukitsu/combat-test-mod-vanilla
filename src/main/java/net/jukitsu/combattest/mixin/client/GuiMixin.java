@@ -33,9 +33,7 @@ public abstract class GuiMixin extends GuiComponent {
     @Shadow private int screenHeight;
 
     @Inject(method = "renderCrosshair", at = @At("HEAD"))
-    public void preventIndicatorRender(PoseStack poseStack, CallbackInfo ci)
-    {
-
+    public void preventIndicatorRender(PoseStack poseStack, CallbackInfo ci) {
     }
 
     @Overwrite
