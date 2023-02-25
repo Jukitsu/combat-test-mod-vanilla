@@ -16,11 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SnowballItem.class)
 public class SnowballItemMixin {
     @Inject(method = "use", at = @At(value = "HEAD"))
-    public void addProjectileCooldown(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir)
-    {
-
+    public void addProjectileCooldown(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
         player.getCooldowns().addCooldown( (Item) (Object)  this, 4);
-
     }
-
 }
